@@ -7,7 +7,7 @@ permissions:
 on:
     push:
         tags:
-            - "sandbox-*"
+            - "ubuntu-*"
 
 jobs:
     build:
