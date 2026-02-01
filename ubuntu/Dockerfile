@@ -16,6 +16,10 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends gh \
  && rm -rf /var/lib/apt/lists/*
 
+# Install agent-browser + Chromium with system deps
+RUN npm install -g agent-browser \
+ && agent-browser install --with-deps
+
 COPY package.json index.js /app/
 RUN cd /app && npm install --production
 
