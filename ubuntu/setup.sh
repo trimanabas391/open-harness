@@ -21,6 +21,7 @@ done
 # ─── Collect all options upfront ─────────────────────────────────────
 CLAWDIUS_PW="clawdius"
 INSTALL_BROWSER=true
+INSTALL_OPENCLAW=true
 SSH_PUBKEY=""
 GH_TOKEN=""
 GIT_USER_NAME=""
@@ -55,7 +56,12 @@ if [[ "$NON_INTERACTIVE" == false ]]; then
   printf "\n  GitHub personal access token for 'gh auth' (blank to skip)\n"
   read -rsp "  Token: " GH_TOKEN; echo
 
-  # 5) agent-browser
+  # 5) OpenClaw
+  printf "\n  Install OpenClaw CLI? (https://docs.openclaw.ai/start/getting-started)\n"
+  read -rp "  Install OpenClaw? [Y/n]: " answer
+  [[ "$answer" =~ ^[Nn]$ ]] && INSTALL_OPENCLAW=false
+
+  # 6) agent-browser
   read -rp "  Install agent-browser + Chromium? [Y/n]: " answer
   [[ "$answer" =~ ^[Nn]$ ]] && INSTALL_BROWSER=false
 
@@ -150,14 +156,25 @@ if [[ -n "$SSH_PUBKEY" ]]; then
   ok "SSH public key added"
 fi
 
-# ─── 10. GitHub CLI auth (optional) ──────────────────────────────────
+# ─── 10. OpenClaw (optional) ──────────────────────────────────────────
+if [[ "$INSTALL_OPENCLAW" == true ]]; then
+  banner "Installing OpenClaw CLI"
+  su - clawdius -c "curl -fsSL https://openclaw.ai/install.sh | bash"
+  ok "OpenClaw CLI installed"
+  printf "  Run 'openclaw onboard --install-daemon' as clawdius to complete setup.\n"
+else
+  banner "Skipping OpenClaw"
+  ok "Skipped"
+fi
+
+# ─── 11. GitHub CLI auth (optional) ──────────────────────────────────
 if [[ -n "$GH_TOKEN" ]]; then
   banner "Authenticating GitHub CLI for clawdius"
   echo "$GH_TOKEN" | su - clawdius -c "gh auth login --with-token"
   ok "gh auth configured"
 fi
 
-# ─── 11. Cleanup ─────────────────────────────────────────────────────
+# ─── 12. Cleanup ─────────────────────────────────────────────────────
 banner "Cleaning up APT cache"
 rm -rf /var/lib/apt/lists/*
 ok "Done"

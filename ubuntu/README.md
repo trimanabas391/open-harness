@@ -8,10 +8,10 @@ Provision a fresh Ubuntu/Debian machine with all dependencies and the `clawdius`
 
 ```bash
 # curl
-curl -fsSL https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/feat/1-openclaw-install/ubuntu/setup.sh -o setup.sh
+curl -fsSL https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/openclaw/ubuntu/setup.sh -o setup.sh
 
 # wget
-wget -qO setup.sh https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/feat/1-openclaw-install/ubuntu/setup.sh
+wget -qO setup.sh https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/openclaw/ubuntu/setup.sh
 
 sudo bash setup.sh
 ```
