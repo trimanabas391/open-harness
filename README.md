@@ -7,7 +7,12 @@ Server provisioning and sandbox images for [OpenClaw](https://docs.openclaw.ai).
 Provision a fresh Ubuntu/Debian server:
 
 ```bash
+# curl
 curl -fsSL https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/openclaw/ubuntu/setup.sh -o setup.sh
+
+# wget
+wget -qO setup.sh https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/heads/openclaw/ubuntu/setup.sh
+
 sudo bash setup.sh
 ```
 
