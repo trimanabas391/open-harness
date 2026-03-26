@@ -16,17 +16,9 @@ wget -qO setup.sh https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/head
 sudo bash setup.sh
 ```
 
-See [sandbox/README.md](./sandbox/) for full details, configuration options, and non-interactive usage.
-
-## Available Sandboxes
-
-| Sandbox | Description |
-|---------|-------------|
-| [sandbox](./sandbox/) | Debian-based Claude Code server with Node.js, Bun, uv, GitHub CLI, and agent-browser |
-
 ## Architecture
 
-Each sandbox provisions a `clawdius` user with:
+The sandbox provisions a `clawdius` user with:
 
 - **Runtime tooling** -- Node.js 22.x, Bun, uv (Python), GitHub CLI
 - **Claude Code CLI** -- AI-powered coding assistant

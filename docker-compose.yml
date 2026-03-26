@@ -1,6 +1,6 @@
 services:
   sandbox:
     build:
-      context: ./sandbox
+      context: .
     stdin_open: true
     tty: true
