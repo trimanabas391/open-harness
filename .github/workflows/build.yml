@@ -48,6 +48,6 @@ jobs:
                   LATEST=ghcr.io/ruska-ai/sandbox:${{ steps.parse.outputs.sandbox }}-latest
 
                   echo "Building: $IMAGE and $LATEST"
-                  docker build -t $IMAGE -t $LATEST ${{ steps.parse.outputs.sandbox }}/
+                  docker build -t $IMAGE -t $LATEST .
                   docker push $IMAGE
                   docker push $LATEST

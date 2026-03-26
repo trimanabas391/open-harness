@@ -6,7 +6,7 @@ IMAGE = $(REGISTRY)/sandbox/$(SANDBOX_NAME):$(TAG)
 .PHONY: build push all
 
 build:
-	docker build -t $(IMAGE) $(SANDBOX_NAME)/
+	docker build -t $(IMAGE) .
 
 push:
 	docker push $(IMAGE)
