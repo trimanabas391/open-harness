@@ -31,15 +31,15 @@ Here's what you get out of the box:
 
 What makes this different from just running agents locally:
 
-Most setups treat the agent as a tool you invoke. Open Harness treats it as a resident. The sandbox isn't just isolation — it's an environment designed for agents to live in.
+Most setups treat agents as isolated tools — one agent, one session, start from scratch. Open Harness creates a shared environment where multiple agents coexist.
 
-SOUL.md defines who the agent is. MEMORY.md is its long-term memory that persists across sessions. Daily logs accumulate in memory/YYYY-MM-DD.md and get distilled back into MEMORY.md over time. The agent doesn't start from zero every session — it picks up where it left off.
+Claude Code, Codex, and Pi all drop into the same workspace. Same files. Same context. Same memory. One agent writes code, another reviews it, a third runs tests — all reading from and writing to the same space. Swap between them or run them simultaneously without changing anything.
 
-The heartbeat loop runs on a timer in the background. The agent wakes up, reads HEARTBEAT.md, performs whatever tasks you've listed, and goes back to sleep. No human in the loop. It can monitor, maintain, and report autonomously.
+The workspace persists across sessions and agents. Agents pick up where they left off — or where another agent left off. A background heartbeat loop lets agents work autonomously on a timer without anyone present.
 
-And it's agent-agnostic. Claude Code, Codex, and Pi all share the same workspace, the same AGENTS.md instructions, the same memory files. Swap agents without changing your setup. Run them in parallel across named sandboxes.
+Spin up named sandboxes in parallel — `NAME=research`, `NAME=frontend`, `NAME=api` — each its own isolated container with a shared architecture. Your host stays clean. The agents get full permissions inside a space that's disposable.
 
-The architecture is: disposable container + persistent workspace + agent identity + autonomous execution. That combination doesn't exist in any other open-source tool I've seen.
+The architecture is: disposable container + shared persistent workspace + multi-agent collaboration + autonomous execution. That combination doesn't exist in any other open-source tool I've seen.
 
 Star the repo if this is useful: https://github.com/ryaneggz/open-harness
 
