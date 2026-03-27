@@ -1,8 +1,55 @@
-# Open Harness
+# 🏗️ Open Harness
 
 Isolated, pre-configured sandbox images for AI coding agents — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex](https://github.com/openai/codex), [Pi Agent](https://shittycodingagent.ai), and more.
 
-## Install (standalone)
+> **Spin up isolated, fully-provisioned Docker sandboxes where AI coding agents can operate with full permissions, persistent memory, and autonomous background tasks — without touching your host system.**
+
+---
+
+## 🎯 Why Open Harness?
+
+AI coding agents are powerful — but they run with broad system permissions, execute arbitrary code, and need a full development toolchain. Open Harness solves the tension between giving agents the freedom they need and keeping your host machine safe.
+
+### Core Intentions
+
+#### 1. **Isolation & Safety**
+Agents run `--dangerously-skip-permissions` by default — inside a disposable Docker container. They can `rm -rf`, install packages, and spawn processes without any risk to your host machine. The workspace directory is the only thing bind-mounted; everything else is ephemeral.
+
+#### 2. **Zero-to-Agent in Minutes**
+One provisioning script (`install/setup.sh`) installs Node.js, Bun, uv, Docker CLI, GitHub CLI, ripgrep, tmux, and whichever agents you choose — interactively or fully unattended with `--non-interactive`. No more "install 15 things" friction.
+
+#### 3. **Agent-Agnostic**
+Not a wrapper for one tool. The same sandbox runs Claude Code, Codex, and Pi Agent side by side, sharing workspace files and context. `AGENTS.md` is symlinked to `CLAUDE.md` so every agent reads the same instructions.
+
+#### 4. **Persistent Identity**
+`SOUL.md`, `MEMORY.md`, and daily logs (`memory/YYYY-MM-DD.md`) give agents continuity across sessions — not ephemeral chat windows, but persistent collaborators that remember decisions, preferences, and lessons learned.
+
+#### 5. **Autonomous Background Work**
+The heartbeat system (`install/heartbeat.sh` + `HEARTBEAT.md`) lets agents wake on a timer, perform tasks from a user-authored checklist, and go back to sleep — turning reactive tools into proactive workers that can monitor, maintain, and report without human presence.
+
+#### 6. **Multi-Sandbox Parallelism**
+Named sandboxes (`NAME=research`, `NAME=frontend`) run simultaneously, each with its own container, workspace, and agent sessions — enabling parallel workstreams or agent-per-project setups.
+
+---
+
+### Key Benefits
+
+| Benefit | Details |
+|---------|---------|
+| 🔒 **Host protection** | Agents run in a disposable Debian container; only the workspace directory is bind-mounted |
+| 🔄 **Reproducibility** | Dockerfile + setup script = identical environment every time, on any machine |
+| 🐳 **Docker-in-Docker** | `DOCKER=true` mounts the host socket so agents can build and manage containers from inside |
+| 🚀 **CI/CD ready** | GitHub Actions builds and pushes to `ghcr.io/ruska-ai/open-harness` on tagged releases |
+| 🧠 **Agent memory** | SOUL / MEMORY / daily-log system gives agents durable state across restarts and sessions |
+| ⏰ **Unattended operation** | Heartbeat loop with active-hours gating, cost-saving empty-file detection, and auto-rotating logs |
+| ⚙️ **Flexible provisioning** | Interactive mode prompts for SSH keys, Git identity, and per-agent installs; non-interactive mode uses sane defaults |
+| 🔧 **Entrypoint correctness** | `entrypoint.sh` dynamically matches the container's `docker` GID to the host socket's GID, avoiding "permission denied on /var/run/docker.sock" |
+| 🧩 **Per-project extensibility** | `.pi/extensions/`, `.claude/`, and `.codex/` directories live in the workspace — agents are customized per-project |
+| 📦 **Shareable** | Published as a container image — teams `docker pull` a pre-provisioned sandbox instead of each developer running setup |
+
+---
+
+## 📥 Install (standalone)
 
 Run the setup script directly on any Ubuntu/Debian machine:
 
@@ -16,7 +63,9 @@ wget -qO setup.sh https://raw.githubusercontent.com/ruska-ai/sandboxes/refs/head
 sudo bash setup.sh --non-interactive
 ```
 
-## Docker Quick Start
+---
+
+## 🚀 Docker Quick Start
 
 ```bash
 make NAME=my-sandbox build                      # build the image
@@ -42,7 +91,9 @@ make list                                       # see all running sandboxes
 
 `make rebuild` does a full no-cache build and restart. `NAME` is required for all targets.
 
-## Structure
+---
+
+## 📁 Structure
 
 ```
 ├── Dockerfile               # base image: Debian Bookworm slim + sandbox user
@@ -51,7 +102,8 @@ make list                                       # see all running sandboxes
 ├── Makefile                 # build, run, shell, stop, rebuild, clean, push, list
 ├── install/
 │   ├── setup.sh             # provisioning script (runs as root)
-│   └── heartbeat.sh         # periodic heartbeat runner (start/stop/status)
+│   ├── heartbeat.sh         # periodic heartbeat runner (start/stop/status)
+│   └── entrypoint.sh        # container entrypoint (Docker GID matching)
 └── workspace/
     ├── AGENTS.md            # default instructions for all coding agents
     ├── CLAUDE.md            # symlink → AGENTS.md
@@ -63,7 +115,9 @@ make list                                       # see all running sandboxes
     └── .codex/              # Codex config directory
 ```
 
-## How It Works
+---
+
+## ⚙️ How It Works
 
 1. **`Dockerfile`** creates a minimal Debian image with a `sandbox` user (passwordless sudo) and bakes in:
    - `install/` copied to `/home/sandbox/install/`
@@ -85,7 +139,9 @@ make list                                       # see all running sandboxes
 
 4. **`workspace/AGENTS.md`** provides default context to all coding agents. `CLAUDE.md` is a symlink to it — editing either updates both.
 
-## Makefile Targets
+---
+
+## 🛠️ Makefile Targets
 
 | Target | Description |
 |--------|-------------|
@@ -104,7 +160,9 @@ make list                                       # see all running sandboxes
 
 `NAME` is required for all targets. Pass `DOCKER=true` to enable Docker socket access.
 
-## Configuration
+---
+
+## 🔧 Configuration
 
 The setup script supports interactive and non-interactive modes:
 
@@ -118,7 +176,9 @@ sudo bash ~/install/setup.sh --non-interactive
 
 Interactive mode prompts for: SSH public key, Git identity, GitHub token, Claude Code, Codex, Pi Agent, AgentMail (with API key), agent-browser.
 
-## Heartbeat, Soul & Memory
+---
+
+## 🧠 Heartbeat, Soul & Memory
 
 Three workspace files give agents persistent identity and periodic task execution:
 
@@ -129,7 +189,17 @@ Three workspace files give agents persistent identity and periodic task executio
 | `HEARTBEAT.md` | Periodic task checklist | User |
 | `memory/YYYY-MM-DD.md` | Daily append-only logs | Agent |
 
-**Start the heartbeat loop:**
+### 📝 How Memory Works
+
+Agents are instructed to:
+1. **Read `MEMORY.md` at session start** for accumulated context
+2. **Append to `memory/YYYY-MM-DD.md`** during work (notable events, decisions, learnings)
+3. **Distill daily logs into `MEMORY.md`** periodically (during heartbeats or when asked)
+4. **Write to `MEMORY.md` immediately** when the user says "remember this"
+
+`SOUL.md` defines the agent's persona and boundaries. The agent may evolve it over time but must tell the user when it does.
+
+### 💓 Heartbeat
 
 ```bash
 make NAME=my-sandbox heartbeat                              # default: 30 min interval
@@ -149,7 +219,9 @@ make NAME=my-sandbox heartbeat-stop                         # stop the loop
 
 If `HEARTBEAT.md` contains only headers or comments, the cycle is skipped (saves API costs). If the agent has nothing to report, it replies `HEARTBEAT_OK` and the response is suppressed.
 
-## Usage Examples
+---
+
+## 💻 Usage Examples
 
 Once inside the sandbox (`make shell`), use any installed coding agent:
 
@@ -167,7 +239,9 @@ pi -p "Refactor main.py to use async/await"
 /loop 2m append the current system time to output.txt
 ```
 
-## Releases
+---
+
+## 📦 Releases
 
 Tag format: `oh-v<version>` (e.g. `oh-v1.0.0`)
 
