@@ -20,7 +20,9 @@ claude --permission-mode plan
 
 3. Tell it which agent to build. Try the **portfolio manager**:
 
-> _"Set up a portfolio-mgr agent that creates a mock $100K portfolio using Ray Dalio's All Weather strategy with yfinance data and web search sentiment analysis"_
+```
+Set up a portfolio-mgr agent that creates a mock $100K portfolio using Ray Dalio's All Weather strategy with yfinance data and web search sentiment analysis
+```
 
 Claude will ask about the agent's role, tools, heartbeat schedule, and any customizations. Once you approve the plan, it provisions the sandbox end-to-end.
 
