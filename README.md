@@ -1,162 +1,63 @@
-# 🏗️ Open Harness
+# 🏗️ OpenHarness: Next + Postgres + shadcn
 
-Isolated, pre-configured sandbox images for AI coding agents — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex](https://github.com/openai/codex), [Pi Agent](https://shittycodingagent.ai), and more.
+A fully-provisioned Next.js + PostgreSQL + shadcn/ui development environment running inside an isolated [Open Harness](https://github.com/ryaneggz/open-harness) Docker sandbox for AI coding agents.
 
-> **Spin up isolated, fully-provisioned Docker sandboxes where AI coding agents can operate with full permissions, persistent memory, and autonomous background tasks — without touching your host system.**
+**Live Demo:** [next-postgres-shadcn.ruska.dev](https://next-postgres-shadcn.ruska.dev)
 
-## ⚡ Quickstart
+## 🧱 Stack
 
-1. [**Fork this repo**](https://github.com/ryaneggz/open-harness/fork) and clone it:
+- **Next.js 16** (App Router, TypeScript strict, Turbopack)
+- **PostgreSQL 16** (Docker Compose, isolated network)
+- **Prisma 7** ORM (schema-first, auto-generated types)
+- **shadcn/ui** + Tailwind CSS v4
+- **next-themes** (dark mode default)
+- **next-pwa** (Progressive Web App)
+- **Cloudflared** tunnel → `next-postgres-shadcn.ruska.dev`
+- **Ralph** (autonomous agent loop)
+
+---
+
+## ⚡ Quick Start
 
 ```bash
-git clone https://github.com/ryaneggz/open-harness.git && cd open-harness
-```
+# Clone the harness
+git clone https://github.com/ryaneggz/next-postgres-shadcn.git
+cd next-postgres-shadcn
 
-2. Install the `openharness` CLI:
-
-```bash
+# Install dependencies and link the openharness CLI
 npm run setup
+
+# Provision — the agent handles everything
+claude "/provision"
 ```
 
-3. Start Claude at the project root **in plan mode**:
+> **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Node.js](https://nodejs.org/) (v20+).
+
+The agent will:
+1. Build the Docker image with Node.js 22, agent CLIs, and dev tools
+2. Start PostgreSQL + sandbox container with compose overlays
+3. Install dependencies, generate Prisma client, and run migrations
+4. Launch dev server + Cloudflare tunnel, then run test:setup to validate
+
+### 🖥️ Dev Container (Optional)
+
+This repo can also be used as a standalone Dev Container without the orchestrator:
+
+1. **Clone the repo**:
 
 ```bash
-claude --permission-mode plan
+git clone https://github.com/ryaneggz/next-postgres-shadcn.git
+cd next-postgres-shadcn
 ```
 
-4. Tell it which agent to build. Try the **portfolio manager**:
+2. **Open in VS Code** and select **"Reopen in Container"** (`Ctrl+Shift+P` → `Dev Containers: Reopen in Container`).
 
-```
-Set up a portfolio-mgr agent that creates a mock $100K portfolio using Ray Dalio's All Weather strategy with yfinance data and web search sentiment analysis
-```
-
-Claude will ask about the agent's role, tools, heartbeat schedule, and any customizations. Once you approve the plan, it provisions the sandbox end-to-end.
-
-5. Enter the sandbox and start working:
-
-```bash
-openharness shell portfolio-mgr    # enter the sandbox
-claude                             # start working
-```
-
-> **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Node.js](https://nodejs.org/) (v20+). That's all you need on your host.
-
-### More example agents
-
-| Prompt | What it builds |
-|--------|---------------|
-| _"Set up a blog-writer agent"_ | Writes blog posts for your website, creates PRs with drafts, and generates LinkedIn & X.com posts for manual promotion |
-| _"Set up an uptime-monitor agent"_ | Checks your URLs every 30 minutes for availability and response time, files GitHub issues on downtime, generates weekly SLA reports |
-
-### Cleanup
-
-```bash
-openharness clean portfolio-mgr    # full teardown (container + image + worktree)
-openharness list                   # see what's still running
-```
-
----
-
-## 🎯 Why Open Harness?
-
-AI coding agents are powerful — but they run with broad system permissions, execute arbitrary code, and need a full development toolchain. Open Harness solves the tension between giving agents the freedom they need and keeping your host machine safe.
-
-### Core Intentions
-
-#### 1. **Isolation & Safety**
-Agents run `--dangerously-skip-permissions` by default — inside a disposable Docker container. They can `rm -rf`, install packages, and spawn processes without any risk to your host machine. The workspace is bind-mounted, and the project-level `.openharness/` config is mounted behind `workspace/.openharness`; everything else is ephemeral.
-
-#### 2. **Zero-to-Agent in Minutes**
-One provisioning script (`install/setup.sh`) installs Node.js, Bun, uv, Docker CLI, GitHub CLI, ripgrep, tmux, and whichever agents you choose — interactively or fully unattended with `--non-interactive`. No more "install 15 things" friction.
-
-#### 3. **Agent-Agnostic**
-Not a wrapper for one tool. The same sandbox runs Claude Code, Codex, and Pi Agent side by side, sharing workspace files and context. `AGENTS.md` is symlinked to `CLAUDE.md` so every agent reads the same instructions.
-
-#### 4. **Persistent Identity**
-`SOUL.md`, `MEMORY.md`, and daily logs (`memory/YYYY-MM-DD.md`) give agents continuity across sessions — not ephemeral chat windows, but persistent collaborators that remember decisions, preferences, and lessons learned.
-
-#### 5. **Autonomous Background Work**
-The heartbeat system (`install/heartbeat.sh` + `HEARTBEAT.md`) lets agents wake on a timer, perform tasks from a user-authored checklist, and go back to sleep — turning reactive tools into proactive workers that can monitor, maintain, and report without human presence.
-
-#### 6. **Multi-Sandbox Parallelism**
-Named sandboxes (`research`, `frontend`) run simultaneously, each with its own container, workspace, and agent sessions — enabling parallel workstreams or agent-per-project setups.
-
----
-
-### Key Benefits
-
-| Benefit | Details |
-|---------|---------|
-| 🔒 **Host protection** | Agents run in a disposable Debian container; the workspace is bind-mounted, with `.openharness/` exposed through `workspace/.openharness` |
-| 🔄 **Reproducibility** | `docker/Dockerfile` + setup script = identical environment every time, on any machine |
-| 🐳 **Docker-in-Docker** | `--docker` flag mounts the host socket so agents can build and manage containers from inside |
-| 🚀 **CI/CD ready** | GitHub Actions builds and pushes to `ghcr.io/ryaneggz/open-harness` on tagged releases |
-| 🧠 **Agent memory** | SOUL / MEMORY / daily-log system gives agents durable state across restarts and sessions |
-| ⏰ **Unattended operation** | Cron-scheduled heartbeats with multiple files/intervals, active-hours gating, cost-saving empty-file detection, and auto-rotating logs |
-| ⚙️ **Flexible provisioning** | Interactive mode prompts for SSH keys, Git identity, and per-agent installs; non-interactive mode uses sane defaults |
-| 🔧 **Entrypoint correctness** | `entrypoint.sh` dynamically matches the container's `docker` GID to the host socket's GID, avoiding "permission denied on /var/run/docker.sock" |
-| 🧩 **Per-project extensibility** | `.openharness/extensions/`, `.claude/`, and `.codex/` directories live in the workspace — agents are customized per-project |
-| 📦 **Shareable** | Published as a container image — teams `docker pull` a pre-provisioned sandbox instead of each developer running setup |
-
----
-
-## 🚀 More Ways to Run
-
-**Step-by-step** (if you want control over each stage):
-
-```bash
-openharness build my-sandbox                      # build the image
-openharness run my-sandbox                        # start the container
-openharness shell my-sandbox                      # open a shell as sandbox user
-sudo bash ~/install/setup.sh                      # provision tools (interactive)
-cd ~/workspace && claude                          # launch an agent
-```
-
-**Standalone** (no Docker, direct on any Ubuntu/Debian machine):
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/ryaneggz/open-harness/refs/heads/main/install/setup.sh -o setup.sh
-sudo bash setup.sh --non-interactive
-```
-
-**Docker-in-Docker** (agents can build and manage containers):
-
-```bash
-openharness quickstart my-sandbox --docker        # sandbox with Docker access
-```
-
-**Multiple sandboxes** (parallel workstreams):
-
-```bash
-openharness quickstart research
-openharness quickstart frontend --docker          # this one gets Docker
-openharness list                                  # see all running sandboxes
-```
-
-`openharness rebuild <name>` does a full no-cache rebuild and restart.
-
----
-
-## 🖥️ Orchestrator Dev Container (Recommended)
-
-> **Optional but recommended.** Adds an isolation layer for the orchestrator itself — if an agent escapes its sandbox, it hits the orchestrator container, not your host. Also gives you a reproducible dev environment across machines. You can skip this and run the orchestrator bare-metal with just Docker installed.
-
-The project includes a `.devcontainer/` setup that wraps the entire project root in an SSH-accessible container with all orchestrator tools pre-installed.
-
-### Quick Setup
-
-**Option 1 — VS Code Dev Containers** (recommended):
-
-Open the project in VS Code and select **"Reopen in Container"** from the Command Palette. The Dev Containers extension handles everything automatically.
-
-**Option 2 — Manual compose + SSH**:
+   **Or run manually**:
 
 ```bash
 docker compose -f .devcontainer/docker-compose.yml up -d
 ssh orchestrator@localhost -p 2222   # password: test1234
 ```
-
-### Credentials
 
 | Field | Value |
 |-------|-------|
@@ -164,30 +65,252 @@ ssh orchestrator@localhost -p 2222   # password: test1234
 | Password (SSH + sudo) | `test1234` |
 | SSH Port | `2222` |
 
-### VS Code Remote-SSH Config
+> Requires VS Code with the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
-Add to `~/.ssh/config` on your host:
+---
+
+## 📁 Project Structure
 
 ```
-Host orchestrator
-    HostName localhost
-    Port 2222
-    User orchestrator
+├── .devcontainer/                # Dev Container config (Dockerfile, compose, SSH)
+├── docker/                       # Sandbox Docker config (Dockerfile, compose)
+├── install/                      # Provisioning scripts (setup.sh, heartbeat.sh)
+├── cli/                          # openharness CLI
+├── packages/sandbox/             # @openharness/sandbox tools
+└── workspace/                    # Agent harness (persisted via bind mount)
+    ├── projects/
+    │   └── next-app/             # Next.js project
+    │       ├── src/app/          # App Router routes (/, /roadmap)
+    │       ├── src/components/   # React components (ui/, landing/, roadmap/)
+    │       ├── src/data/         # Typed data (roadmap.ts)
+    │       ├── src/lib/          # Utilities + guard helpers
+    │       ├── src/test/         # Vitest tests (35 tests)
+    │       ├── prisma/           # Database schema & migrations
+    │       └── public/           # Static assets + PWA manifest
+    ├── .claude/                  # Agent config
+    │   ├── skills/               # 12 skills (slash commands)
+    │   ├── agents/               # 11 sub-agents (experts, council, critic)
+    │   └── rules/                # Coding standards
+    ├── .ralph/                   # Ralph autonomous loop (PRD, progress, archive)
+    ├── heartbeats/               # 5 periodic task definitions
+    ├── memory/                   # Daily append-only logs
+    ├── SOUL.md                   # Agent persona & boundaries
+    ├── MEMORY.md                 # Curated long-term memory
+    └── heartbeats.conf           # Heartbeat schedule config (5 entries)
 ```
 
-Then connect via **Remote-SSH: Connect to Host...** → `orchestrator`.
+---
 
-### Usage Inside the Container
+## 🔧 Post-Provisioning Setup (One-Time)
 
-The same `openharness` CLI workflow works inside the container:
+These steps require manual authentication regardless of how you started the environment:
+
+### ☁️ Cloudflare Tunnel
+
+Exposes the dev server at `next-postgres-shadcn.ruska.dev`:
 
 ```bash
-openharness quickstart my-agent      # provision a new sandbox
-openharness shell my-agent           # enter a sandbox
-openharness list                     # see running sandboxes
+cloudflared login                                                         # Opens browser for Cloudflare auth (one-time)
+~/install/cloudflared-tunnel.sh next-postgres-shadcn next-postgres-shadcn.ruska.dev 3000  # Creates tunnel, config, DNS route
+cloudflared tunnel --config ~/.cloudflared/config-next-postgres-shadcn.yml run next-postgres-shadcn  # Start the tunnel
 ```
 
-### Teardown
+### 🔑 GitHub CLI
+
+```bash
+gh auth login
+```
+
+### ⚙️ Environment Variables
+
+Set in `projects/next-app/.env` or container env:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DATABASE_URL` | `postgresql://sandbox:sandbox@postgres:5432/sandbox` | PostgreSQL connection (set via compose) |
+| `CLOUDFLARE_TUNNEL_TOKEN` | _(unset)_ | From `cloudflared tunnel create` output (optional) |
+
+---
+
+## 🐳 Services
+
+| Service | Host | Port | Credentials |
+|---------|------|------|-------------|
+| PostgreSQL 16 | `postgres` | 5432 | `sandbox` / `sandbox` / `sandbox` |
+| Next.js Dev Server | `localhost` | 3000 | — |
+| Prisma Studio | `localhost` | 5555 | — |
+| Cloudflared Tunnel | `next-postgres-shadcn.ruska.dev` | 443 | — |
+
+---
+
+## 💻 Development
+
+### 🚀 Start Developing
+
+```bash
+cd workspace/projects/next-app
+npm run dev                                           # Dev server on port 3000
+cloudflared tunnel --config ~/.cloudflared/config-next-postgres-shadcn.yml run next-postgres-shadcn  # Expose publicly (optional)
+claude                                                # Start AI agent
+```
+
+### 🛠️ Common Commands
+
+```bash
+# shadcn components
+npx shadcn@latest add button                          # Add a component
+
+# Database
+npx prisma migrate dev --name add-users-table         # Create migration
+npx prisma generate                                   # Regenerate client
+npx prisma studio                                     # Browse data (port 5555)
+psql -c "SELECT * FROM users"                         # Direct SQL
+
+# Testing
+npm test                                              # Vitest (unit/integration)
+npm run test:e2e                                      # Playwright E2E
+
+# Linting & formatting
+npm run lint                                          # ESLint
+npm run format                                        # Prettier
+npm run type-check                                    # tsc --noEmit
+```
+
+### 🔄 Development Workflow
+
+| Step | Command | When |
+|------|---------|------|
+| Lint + Format + Type-check + Test | automatic | On every `git commit` (Husky pre-commit) |
+| CI pipeline | automatic | On every `git push` (GitHub Actions) |
+| QA | agent-browser | Navigate to `https://next-postgres-shadcn.ruska.dev` |
+| Build health | heartbeat | Every 30 min during 9am–9pm |
+| Issue triage | heartbeat | Hourly, 24/7 |
+| Nightly release | heartbeat | Daily 23:50 UTC |
+| Backlog ranking | heartbeat | Daily 08:00 UTC |
+| Implementer | heartbeat | Every 2h during 9am–9pm |
+
+---
+
+## 🧩 Skills (Slash Commands)
+
+Host-level skills run from the orchestrator (outside the container):
+
+| Skill | Description |
+|-------|-------------|
+| `/provision` | Build + start the sandbox with all compose overlays, wait for startup, validate with `test:setup` |
+| `/provision --rebuild` | Full teardown (volumes included) then provision from scratch |
+| `/repair` | Run 8 health checks (env, deps, Prisma, DB, dev server, tunnel, public URL), auto-fix failures. Works from host or inside container. |
+| `/delegate` | Decompose plan into tasks, spawn parallel worker agents in waves |
+| `/release` | Cut a CalVer release — create `release/YYYY.M.D-N` branch, tag, push to trigger CI + GHCR build |
+| `/release --dry-run` | Pre-flight checks only — show version and test results without releasing |
+| `/destroy` | Tear down containers + volumes, optionally prune Docker image |
+
+Workspace-level skills run inside the sandbox container:
+
+| Skill | Description |
+|-------|-------------|
+| `/ci-status` | Poll GitHub Actions CI for current branch, report pass/fail with failure details |
+| `/agent-browser` | Navigate, interact with, and screenshot the app via headless Chromium |
+| `/prd` | Generate a Product Requirements Document for a new feature |
+| `/ralph` | Convert a PRD to `.ralph/prd.json` for the autonomous agent loop |
+| `/issue-triage` | Triage unassigned GitHub issues with parallel sub-agents + AI council |
+| `/backlog-rank` | Rank open issues by PM criteria, update pinned backlog tracking issue |
+| `/strategic-proposal` | Spawn 5 domain experts + AI council + critic for signal-validated product roadmap |
+| `/implement` | Pick top validated roadmap item, run Ralph loop in tmux, submit draft PR with CI green |
+| `/quality-gate` | Template: validate decisions against thresholds before acting |
+| `/strategy-review` | Template: measure decision quality over time |
+
+---
+
+## 🗺️ Product Roadmap
+
+**Vision:** Document [Open Harness](https://github.com/ryaneggz/open-harness), let users promote their forks, and ultimately enable users to curate their own Docker registries with monthly licensing.
+
+**Core principle: Signal over features.** We build what users demonstrably want. Items require evidence of demand (GitHub reactions, comments, fork activity) before entering the build queue. Infrastructure prerequisites (auth, security) are exempt.
+
+**Live roadmap:** [next-postgres-shadcn.ruska.dev/roadmap](https://next-postgres-shadcn.ruska.dev/roadmap) | [Pinned GitHub issue](https://github.com/ryaneggz/next-postgres-shadcn/issues?q=label%3Aroadmap+is%3Aopen)
+
+### Phases
+
+| Phase | Label | Criteria |
+|-------|-------|----------|
+| **Now** | Building Now | Has signal + dependencies met + complexity ≤ M, OR infrastructure prerequisite |
+| **Next** | Up Next | Has signal but dependencies not met, OR complexity L with signal |
+| **Later** | On the Horizon | No signal, speculative, or blocked by multiple prerequisites |
+
+### Item Properties
+
+Each roadmap item tracks these properties (consistent across the pinned issue, `/roadmap` page, and `src/data/roadmap.ts`):
+
+| Property | Values | Purpose |
+|----------|--------|---------|
+| **Rank** | 1–N | Priority order within phase |
+| **Category** | `product` · `docs` · `security` · `registry` · `agent` | Domain area |
+| **Phase** | `now` · `next` · `later` | Build priority (see above) |
+| **Complexity** | `S` · `M` · `L` | Estimated effort |
+| **Signal** | Evidence string, `"infrastructure"`, or `"none"` | Demand validation |
+
+### How It Works
+
+1. **`/strategic-proposal`** — 5 domain experts (product, docs, security, registry, agent systems) propose roadmap items in parallel
+2. **Strategic Council** (opus) drafts a prioritized roadmap, scoring each item on signal, feasibility, dependencies, and alignment
+3. **Strategic Critic** challenges the draft — verifies signal claims, questions phase assignments, identifies dependency gaps
+4. **Council finalizes** — incorporates valid criticisms, produces the ranked roadmap
+5. **Pinned issue + `/roadmap` page** are updated with the result
+6. **`/implement` heartbeat** (every 2h) picks the top validated "Now" item, generates a Ralph PRD, and runs the implementation loop
+
+### How to Influence the Roadmap
+
+React with 👍 on [GitHub issues](https://github.com/ryaneggz/next-postgres-shadcn/issues) to signal demand. Items with the most community votes get built first. The implementer heartbeat only picks items with validated signal — unvoted features stay in "Later."
+
+---
+
+## 🤖 Ralph (Autonomous Agent Loop)
+
+Ralph works through a PRD, implementing user stories one at a time in a loop:
+
+```bash
+# Full workflow: plan → PRD → prd.json → loop → reflect → cleanup → PR
+openharness ralph prd next-postgres-shadcn                    # Generate PRD from plan
+openharness ralph setup next-postgres-shadcn                  # Convert PRD → prd.json + draft PR
+openharness ralph run next-postgres-shadcn                    # Start loop in tmux (200 iterations)
+openharness ralph status next-postgres-shadcn                 # Check progress
+openharness ralph reflect next-postgres-shadcn                # Update MEMORY.md from session
+openharness ralph cleanup next-postgres-shadcn                # Lint, format, type-check, test
+openharness ralph pr next-postgres-shadcn                     # Archive run + undraft PR
+```
+
+---
+
+## 🧠 Agent Identity & Memory
+
+| File | Purpose | Authored by |
+|------|---------|-------------|
+| `SOUL.md` | Agent persona, tone, boundaries | User (seeded), agent evolves |
+| `MEMORY.md` | Curated long-term memory | Agent (distilled from daily logs) |
+| `heartbeats.conf` | Heartbeat schedule config | User |
+| `heartbeats/*.md` | Heartbeat task files | User |
+| `memory/YYYY-MM-DD.md` | Daily append-only logs | Agent |
+
+---
+
+## 🔒 Sandbox Management
+
+```bash
+# From the orchestrator
+openharness shell next-postgres-shadcn     # Enter sandbox
+openharness stop next-postgres-shadcn      # Stop
+openharness run next-postgres-shadcn       # Restart
+openharness clean next-postgres-shadcn     # Full teardown (container + image + worktree)
+openharness list                           # See all running sandboxes
+
+# Heartbeats
+openharness heartbeat sync next-postgres-shadcn     # Sync schedules from heartbeats.conf
+openharness heartbeat status next-postgres-shadcn   # Show schedules + recent logs
+openharness heartbeat stop next-postgres-shadcn     # Remove all schedules
+```
+
+### Dev Container Teardown (if using Dev Container)
 
 ```bash
 docker compose -f .devcontainer/docker-compose.yml down
@@ -195,192 +318,27 @@ docker compose -f .devcontainer/docker-compose.yml down
 
 ---
 
-## 📁 Structure
+## 📦 Versioning
 
-```
-├── .devcontainer/
-│   ├── devcontainer.json    # VS Code Dev Container config
-│   ├── Dockerfile           # orchestrator image: SSH + dev tools
-│   ├── docker-compose.yml   # orchestrator compose (port 2222, Docker socket)
-│   └── entrypoint.sh        # Docker GID matching entrypoint
-├── docker/
-│   ├── Dockerfile           # base image: Debian Bookworm slim + sandbox user
-│   ├── docker-compose.yml   # base compose: mounts workspace/
-│   └── docker-compose.docker.yml # Docker override: mounts socket + host networking
-├── cli/                     # openharness CLI (sandbox orchestration)
-├── packages/sandbox/        # @openharness/sandbox (Docker + worktree tools)
-├── install/
-│   ├── setup.sh             # provisioning script (runs as root)
-│   ├── heartbeat.sh         # cron-based heartbeat runner (sync/run/stop/status)
-│   └── entrypoint.sh        # container entrypoint (Docker GID matching + cron start)
-└── workspace/
-    ├── AGENTS.md            # default instructions for all coding agents
-    ├── CLAUDE.md            # symlink → AGENTS.md
-    ├── .openharness         # symlink → ../.openharness
-    ├── heartbeats.conf      # heartbeat schedule config (cron expressions)
-    ├── heartbeats/          # heartbeat task .md files (default.md, etc.)
-    ├── SOUL.md              # agent persona, tone, and boundaries
-    ├── MEMORY.md            # curated long-term memory
-    ├── memory/              # daily append-only logs (YYYY-MM-DD.md)
-    ├── .claude/             # Claude Code config directory
-    └── .codex/              # Codex config directory
-```
+This project uses **calendar versioning** (`YYYY.M.D`), matching the [Open Harness](https://github.com/ryaneggz/open-harness) convention.
 
----
+| Branch | Purpose |
+|--------|---------|
+| `development` | Active development (default branch) |
+| `master` | Stable releases |
 
-## ⚙️ How It Works
-
-1. **`docker/Dockerfile`** creates a minimal Debian image with a `sandbox` user (passwordless sudo) and bakes in:
-   - `install/` copied to `/home/sandbox/install/`
-   - `.openharness/` copied to `/home/sandbox/.openharness/`
-   - `workspace/` copied to `/home/sandbox/workspace/`
-   - Agent aliases in `.bashrc` (`claude`, `codex`, `pi`)
-   - Docker group membership for the sandbox user
-   - Default shell drops into `/home/sandbox/workspace`
-
-2. **`docker/docker-compose.yml`** bind-mounts `./workspace` and the project-level `.openharness/` config (so `workspace/.openharness` resolves correctly). When `DOCKER=true`, the override file (`docker/docker-compose.docker.yml`) additionally mounts the Docker socket and configures `host.docker.internal`.
-
-3. **`install/setup.sh`** provisions all tools system-wide (as root):
-   - Node.js 22.x, npm, tmux, nano, ripgrep, jq (always)
-   - Docker CLI + Compose plugin (always)
-   - GitHub CLI (always)
-   - Bun, uv (always)
-   - Claude Code CLI (default yes)
-   - OpenAI Codex, Pi Agent, AgentMail CLI (opt-in)
-   - agent-browser + Chromium (default yes)
-
-4. **`workspace/AGENTS.md`** provides default context to all coding agents. `CLAUDE.md` is a symlink to it, and `workspace/.openharness` is a symlink to the project-level `.openharness/` config.
-
----
-
-## 🛠️ CLI Commands
-
-| Command | Description |
-|---------|-------------|
-| `openharness quickstart <name>` | Build, provision, and prepare sandbox (one command) |
-| `openharness build <name>` | Build the Docker image |
-| `openharness rebuild <name>` | Full no-cache rebuild + restart |
-| `openharness run <name>` | Start the container (detached) |
-| `openharness shell <name>` | Open a bash shell as `sandbox` user |
-| `openharness stop <name>` | Stop the container |
-| `openharness clean <name>` | Full cleanup (container + image + worktree) |
-| `openharness push <name>` | Push image to ghcr.io/ryaneggz |
-| `openharness list` | List all running sandboxes |
-| `openharness heartbeat sync <name>` | Sync heartbeat cron schedules from `heartbeats.conf` |
-| `openharness heartbeat stop <name>` | Remove all heartbeat cron schedules |
-| `openharness heartbeat status <name>` | Show heartbeat schedules and recent logs |
-| `openharness heartbeat migrate <name>` | Convert legacy `HEARTBEAT_INTERVAL` to `heartbeats.conf` |
-
-Pass `--docker` to enable Docker socket access. Pass `--base-branch <branch>` to set the base branch for worktrees.
-
-Run `openharness` with no arguments to launch the interactive AI agent mode.
-
----
-
-## 🔧 Configuration
-
-The setup script supports interactive and non-interactive modes:
+### 🏷️ Creating a release
 
 ```bash
-# Interactive (prompts for each option)
-sudo bash ~/install/setup.sh
+# Using the /release skill (recommended)
+claude "/release"
 
-# Non-interactive (installs everything with defaults)
-sudo bash ~/install/setup.sh --non-interactive
+# Or manually
+git tag 2026.4.7
+git push origin 2026.4.7
 ```
 
-Interactive mode prompts for: SSH public key, Git identity, GitHub token, Claude Code, Codex, Pi Agent, AgentMail (with API key), agent-browser.
-
----
-
-## 🧠 Heartbeat, Soul & Memory
-
-Three workspace files give agents persistent identity and periodic task execution:
-
-| File | Purpose | Authored by |
-|------|---------|-------------|
-| `SOUL.md` | Agent persona, tone, boundaries | User (seeded with template) |
-| `MEMORY.md` | Curated long-term memory | Agent (distilled from daily logs) |
-| `heartbeats.conf` | Heartbeat schedule config (cron → file mapping) | User |
-| `heartbeats/*.md` | Heartbeat task files (`default.md`, etc.) | User |
-| `memory/YYYY-MM-DD.md` | Daily append-only logs | Agent |
-
-### 📝 How Memory Works
-
-Agents are instructed to:
-1. **Read `MEMORY.md` at session start** for accumulated context
-2. **Append to `memory/YYYY-MM-DD.md`** during work (notable events, decisions, learnings)
-3. **Distill daily logs into `MEMORY.md`** periodically (during heartbeats or when asked)
-4. **Write to `MEMORY.md` immediately** when the user says "remember this"
-
-`SOUL.md` defines the agent's persona and boundaries. The agent may evolve it over time but must tell the user when it does.
-
-### 💓 Heartbeat
-
-Heartbeats are cron-scheduled tasks. Each heartbeat is a `.md` file with instructions for the agent, mapped to a cron schedule in `heartbeats.conf`.
-
-```bash
-openharness heartbeat sync my-sandbox                        # sync schedules from heartbeats.conf
-openharness heartbeat status my-sandbox                      # show schedules + recent logs
-openharness heartbeat stop my-sandbox                        # remove all schedules
-openharness heartbeat migrate my-sandbox                     # convert legacy HEARTBEAT_INTERVAL to conf
-```
-
-**Schedule config** (`workspace/heartbeats.conf`):
-
-```
-# Format: <cron> | <file> | [agent] | [active_start-active_end]
-*/30 * * * * | heartbeats/default.md
-*/15 * * * * | heartbeats/check-deployments.md | claude | 9-18
-0 */4 * * *  | heartbeats/memory-distill.md
-0 20 * * *   | heartbeats/daily-summary.md
-```
-
-Schedules auto-sync on container startup. Edit `heartbeats.conf`, then run `openharness heartbeat sync <name>` to apply changes.
-
-**Global defaults** (env vars, set in `docker/docker-compose.yml`):
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HEARTBEAT_ACTIVE_START` | _(unset)_ | Default active hour start (0-23) |
-| `HEARTBEAT_ACTIVE_END` | _(unset)_ | Default active hour end (0-23) |
-| `HEARTBEAT_AGENT` | `claude` | Default agent CLI to invoke |
-
-Per-entry overrides for agent and active hours can be set in `heartbeats.conf`.
-
-If a heartbeat file contains only headers or comments, that execution is skipped (saves API costs). If the agent has nothing to report, it replies `HEARTBEAT_OK` and the response is suppressed.
-
----
-
-## 💻 Usage Examples
-
-Once inside the sandbox (`openharness shell <name>`), use any installed coding agent:
-
-```bash
-# Claude Code
-claude -p "Create a Python CLI app with click that fetches weather data"
-
-# OpenAI Codex
-codex "Write a bash script that finds all files larger than 10MB"
-
-# Pi Agent
-pi -p "Refactor main.py to use async/await"
-
-# Claude Code loop tasks
-/loop 2m append the current system time to output.txt
-```
-
----
-
-## 📦 Releases
-
-Tag format: `YYYY.M.D` (e.g. `2026.4.4`). For multiple releases on the same day, append an increment key: `2026.4.4-1`, `2026.4.4-2`.
-
-```bash
-git tag 2026.4.4
-git push origin 2026.4.4
-```
-
-This triggers the build workflow which builds and pushes:
-- `ghcr.io/ryaneggz/open-harness:2026.4.4`
-- `ghcr.io/ryaneggz/open-harness:latest`
+Pushing a CalVer tag triggers the release workflow which:
+1. Runs the full CI pipeline (lint, format, type-check, build, test, E2E)
+2. Builds and pushes a Docker image to `ghcr.io/ryaneggz/next-postgres-shadcn:<version>`
+3. Creates a GitHub Release with auto-generated release notes
