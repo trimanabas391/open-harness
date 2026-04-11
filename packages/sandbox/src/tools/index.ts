@@ -10,7 +10,6 @@ import { pushTool } from "./push.js";
 import { quickstartTool } from "./quickstart.js";
 import { heartbeatTool } from "./heartbeat.js";
 import { worktreeTool } from "./worktree.js";
-import { ralphTool } from "./ralph.js";
 
 export const sandboxTools: ToolDefinition[] = [
   listTool,
@@ -24,7 +23,6 @@ export const sandboxTools: ToolDefinition[] = [
   pushTool,
   heartbeatTool,
   worktreeTool,
-  ralphTool,
 ];
 
 export {
@@ -39,5 +37,4 @@ export {
   quickstartTool,
   heartbeatTool,
   worktreeTool,
-  ralphTool,
 };

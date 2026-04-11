@@ -13,7 +13,6 @@ declare module "@openharness/sandbox" {
   export const quickstartTool: ToolDefinition;
   export const heartbeatTool: ToolDefinition;
   export const worktreeTool: ToolDefinition;
-  export const ralphTool: ToolDefinition;
 
   export interface SandboxOptions {
     name: string;

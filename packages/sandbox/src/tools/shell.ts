@@ -17,7 +17,7 @@ export const shellTool: ToolDefinition = {
     const cmd = execCmd(name, ["bash", "--login"], {
       user: "sandbox",
       interactive: true,
-      workdir: "/home/sandbox/harness/workspace",
+      workdir: "/home/sandbox/workspace",
       env: { HOME: "/home/sandbox" },
     });
 
