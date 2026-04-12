@@ -1,12 +1,12 @@
-# Open Harness
+# 🏗️ Open Harness
 
 Isolated, pre-configured sandbox containers for AI coding agents — [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [OpenAI Codex](https://github.com/openai/codex), [Pi Agent](https://shittycodingagent.ai), and more.
 
 > **Spin up a fully-provisioned Dev Container where AI coding agents can operate with full permissions, persistent memory, and autonomous background tasks — without touching your host system.**
 
-[Full documentation](https://ryaneggz.github.io/open-harness/)
+📖 [Full documentation](https://ryaneggz.github.io/open-harness/)
 
-## Quickstart
+## ⚡ Quickstart
 
 **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Node.js](https://nodejs.org/) (v20+).
 
@@ -56,7 +56,7 @@ claude                           # start an agent
 | Password | `test1234` |
 | SSH Port | `2222` |
 
-### Cleanup
+### 🧹 Cleanup
 
 ```bash
 openharness clean                # containers + volumes
@@ -64,7 +64,7 @@ openharness clean                # containers + volumes
 
 ---
 
-## Compose Overlays
+## 🧩 Compose Overlays
 
 Toggle optional services in `.openharness/config.json`:
 
@@ -83,7 +83,7 @@ Available: `postgres`, `cloudflared`, `docker`, `git`, `ssh`, `ssh-generate`, `m
 
 ---
 
-## CLI Commands
+## 🛠️ CLI Commands
 
 | Command | Description |
 |---------|-------------|
@@ -100,6 +100,6 @@ Run `openharness` with no arguments for interactive AI agent mode.
 
 ---
 
-## Releases
+## 📦 Releases
 
 CalVer: `YYYY.M.D` (e.g. `2026.4.4`). Push a tag to build and publish to `ghcr.io/ryaneggz/open-harness`.
