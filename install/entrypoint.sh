@@ -60,10 +60,13 @@ if [ -f "$STARTUP" ]; then
   gosu sandbox bash "$STARTUP" 2>&1 | sed 's/^/  /' || true
 fi
 
-# Link Slack bot from bind-mount (replaces /opt/slack image copy)
+# Build and link Slack bot from bind-mount (replaces /opt/slack image copy)
 if [ -f "$HOME/harness/packages/slack/package.json" ]; then
-  echo "Linking Slack bot package..."
-  cd "$HOME/harness/packages/slack" && pnpm install --prod 2>/dev/null && pnpm link --global 2>/dev/null
+  echo "Building and linking Slack bot package..."
+  cd "$HOME/harness/packages/slack"
+  pnpm install 2>/dev/null
+  pnpm run build 2>/dev/null
+  pnpm link --global 2>/dev/null
   cd "$HOME/harness"
 fi
 
