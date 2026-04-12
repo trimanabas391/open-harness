@@ -1,6 +1,5 @@
 declare module "@openharness/sandbox" {
   import type { ToolDefinition } from "@mariozechner/pi-coding-agent";
-  import type { SpawnSyncOptions } from "node:child_process";
 
   export const sandboxTools: ToolDefinition[];
   export const listTool: ToolDefinition;
