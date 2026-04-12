@@ -12,7 +12,7 @@ import type { ToolDefinition } from "@mariozechner/pi-coding-agent";
 
 export const SUBCOMMANDS = new Set([
   "list",
-  "quickstart",
+  "sandbox",
   "run",
   "shell",
   "stop",
@@ -35,7 +35,7 @@ export interface ToolResult {
 
 export interface SandboxModule {
   listTool: ToolDefinition;
-  quickstartTool: ToolDefinition;
+  sandboxTool: ToolDefinition;
   runTool: ToolDefinition;
   shellTool: ToolDefinition;
   stopTool: ToolDefinition;
@@ -126,11 +126,11 @@ export function resolveSubcommand(
     return { tool: sandbox.onboardTool, params };
   }
 
-  // quickstart, run, stop, clean: name is optional (auto-resolved)
-  if (command === "quickstart" || command === "run" || command === "stop" || command === "clean") {
+  // sandbox, run, stop, clean: name is optional (auto-resolved)
+  if (command === "sandbox" || command === "run" || command === "stop" || command === "clean") {
     const params = parseToolArgs(args);
     const toolMap: Record<string, ToolDefinition> = {
-      quickstart: sandbox.quickstartTool,
+      sandbox: sandbox.sandboxTool,
       run: sandbox.runTool,
       stop: sandbox.stopTool,
       clean: sandbox.cleanTool,
@@ -172,7 +172,7 @@ ${b}Usage:${r}
 
 ${b}Commands:${r}
   ${b}list${r}                              List running sandboxes
-  ${b}quickstart${r} [name]                 Build and start sandbox (.devcontainer)
+  ${b}sandbox${r} [name]                    Build and start sandbox (.devcontainer)
   ${b}run${r} [name]                        Start container
   ${b}shell${r} <name>                      Open interactive bash shell
   ${b}stop${r} [name]                       Stop and remove container
@@ -200,7 +200,7 @@ ${b}Agent Options:${r}
 
 ${b}Examples:${r}
   ${d}# Provision and start the sandbox${r}
-  openharness quickstart
+  openharness sandbox
 
   ${d}# Check what's running${r}
   openharness list

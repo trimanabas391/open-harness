@@ -26,7 +26,7 @@ function makeMockTool(name: string) {
 function makeMockSandbox(): SandboxModule {
   return {
     listTool: makeMockTool("sandbox_list"),
-    quickstartTool: makeMockTool("sandbox_quickstart"),
+    sandboxTool: makeMockTool("sandbox_sandbox"),
     runTool: makeMockTool("sandbox_run"),
     shellTool: makeMockTool("sandbox_shell"),
     stopTool: makeMockTool("sandbox_stop"),
@@ -42,7 +42,7 @@ function makeMockSandbox(): SandboxModule {
 describe("SUBCOMMANDS", () => {
   const expected = [
     "list",
-    "quickstart",
+    "sandbox",
     "run",
     "shell",
     "stop",
@@ -239,7 +239,7 @@ describe("resolveSubcommand", () => {
   });
 
   describe("optional-name commands", () => {
-    const commands = ["quickstart", "run", "stop", "clean"];
+    const commands = ["sandbox", "run", "stop", "clean"];
 
     for (const cmd of commands) {
       it(`resolves ${cmd} with name`, () => {
@@ -284,9 +284,9 @@ describe("resolveSubcommand", () => {
   });
 
   describe("tool mapping", () => {
-    it("maps quickstart to quickstartTool", () => {
-      const result = resolveSubcommand("quickstart", ["x"], sandbox);
-      expect("tool" in result && result.tool).toBe(sandbox.quickstartTool);
+    it("maps sandbox to sandboxTool", () => {
+      const result = resolveSubcommand("sandbox", ["x"], sandbox);
+      expect("tool" in result && result.tool).toBe(sandbox.sandboxTool);
     });
 
     it("maps run to runTool", () => {
@@ -355,7 +355,7 @@ describe("helpText", () => {
   });
 
   it("includes usage examples", () => {
-    expect(text).toContain("openharness quickstart");
+    expect(text).toContain("openharness sandbox");
     expect(text).toContain("openharness list");
     expect(text).toContain("openharness shell my-sandbox");
     expect(text).toContain("openharness clean");

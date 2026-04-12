@@ -8,7 +8,7 @@ The `openharness` TypeScript CLI handles all user-facing commands: starting, sto
 
 ## Sandbox Package (`packages/sandbox/`)
 
-`@openharness/sandbox` contains the Docker Compose command builders and tool definitions. Each tool (quickstart, run, stop, clean, shell, etc.) constructs and executes Docker commands against the `.devcontainer/` configuration.
+`@openharness/sandbox` contains the Docker Compose command builders and tool definitions. Each tool (sandbox, run, stop, clean, shell, etc.) constructs and executes Docker commands against the `.devcontainer/` configuration.
 
 The package also serves as a Pi Agent extension, registering all tools as both LLM-callable functions and slash commands.
 

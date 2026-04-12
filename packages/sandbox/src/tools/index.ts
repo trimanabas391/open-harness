@@ -4,14 +4,14 @@ import { runTool } from "./run.js";
 import { shellTool } from "./shell.js";
 import { stopTool } from "./stop.js";
 import { cleanTool } from "./clean.js";
-import { quickstartTool } from "./quickstart.js";
+import { sandboxTool } from "./sandbox.js";
 import { heartbeatTool } from "./heartbeat.js";
 import { worktreeTool } from "./worktree.js";
 import { onboardTool } from "./onboard.js";
 
 export const sandboxTools: ToolDefinition[] = [
   listTool,
-  quickstartTool,
+  sandboxTool,
   runTool,
   shellTool,
   stopTool,
@@ -27,7 +27,7 @@ export {
   shellTool,
   stopTool,
   cleanTool,
-  quickstartTool,
+  sandboxTool,
   heartbeatTool,
   worktreeTool,
   onboardTool,

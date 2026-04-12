@@ -33,7 +33,7 @@ Edit `.openharness/config.json` to enable or disable overlays:
 
 Default enabled: `cloudflared`, `docker`, `mom`, `ssh-generate`.
 
-After editing, run `openharness quickstart` or `/provision` to apply changes.
+After editing, run `openharness sandbox` or `/provision` to apply changes.
 
 ## SSH key strategy
 
@@ -53,5 +53,5 @@ The SSH overlays are mutually exclusive — pick one:
 To add PostgreSQL to your sandbox:
 
 1. Add `".devcontainer/docker-compose.postgres.yml"` to `composeOverrides` in `.openharness/config.json`
-2. Run `openharness quickstart` or `/provision`
+2. Run `openharness sandbox` or `/provision`
 3. The database is available at `postgresql://sandbox:sandbox@postgres:5432/sandbox`

@@ -4,12 +4,12 @@ import { SandboxConfig, type SandboxOptions } from "../lib/config.js";
 import { composeUp, composeEnv } from "../lib/docker.js";
 import { run } from "../lib/exec.js";
 
-export const quickstartTool: ToolDefinition = {
-  name: "sandbox_quickstart",
-  label: "Quickstart Sandbox",
+export const sandboxTool: ToolDefinition = {
+  name: "sandbox_sandbox",
+  label: "Start Sandbox",
   description:
-    "Build and start the sandbox container using .devcontainer. This is the primary way to provision a new sandbox.",
-  promptSnippet: "sandbox_quickstart — build and start the sandbox container",
+    "Start the .devcontainer sandbox. Runs docker compose up with overlays from .openharness/config.json.",
+  promptSnippet: "sandbox_sandbox — start the .devcontainer sandbox",
   parameters: Type.Object({
     name: Type.Optional(
       Type.String({ description: "Sandbox name (auto-resolved from git remote if omitted)" }),

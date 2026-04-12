@@ -29,7 +29,7 @@ describe("sandboxTools", () => {
 
   const expectedTools = [
     "sandbox_list",
-    "sandbox_quickstart",
+    "sandbox_sandbox",
     "sandbox_run",
     "sandbox_shell",
     "sandbox_stop",

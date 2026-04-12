@@ -20,7 +20,7 @@ Provision a new agent sandbox. The sandbox uses `.devcontainer/` as the base env
 
    **Option B — CLI:**
    ```bash
-   openharness quickstart
+   openharness sandbox
    ```
 
    **Option C — Manual compose:**
@@ -79,7 +79,7 @@ Remove an agent sandbox.
 - Commit and push changes to the harness itself (.devcontainer/, install/, workspace/ templates)
 - Manage branches via git
 - Review diffs across agent branches
-- Provision, validate, and tear down sandboxes (`openharness quickstart`, `openharness clean`, `docker exec`, etc.)
+- Provision, validate, and tear down sandboxes (`openharness sandbox`, `openharness clean`, `docker exec`, etc.)
 - Create and manage GitHub issues for agent tracking
 - Run the `/provision` skill for end-to-end sandbox setup
 - **Scaffold agent workspaces** after provisioning — write SOUL.md, MEMORY.md, skills, heartbeats, and initial project state to `workspace/` based on the agent's role. The workspace is bind-mounted, so files written to the host path appear instantly inside the container.

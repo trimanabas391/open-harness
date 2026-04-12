@@ -23,7 +23,7 @@ Open the repo in VS Code → `Cmd+Shift+P` → **"Reopen in Container"**
 
 **Option B — CLI:**
 ```bash
-openharness quickstart
+openharness sandbox
 ```
 
 **Option C — Manual:**
@@ -87,7 +87,7 @@ Available: `postgres`, `cloudflared`, `docker`, `git`, `ssh`, `ssh-generate`, `m
 
 | Command | Description |
 |---------|-------------|
-| `openharness quickstart [name]` | Build and start sandbox |
+| `openharness sandbox [name]` | Build and start sandbox |
 | `openharness run [name]` | Start the container |
 | `openharness shell <name>` | Open a bash shell |
 | `openharness stop [name]` | Stop the container |

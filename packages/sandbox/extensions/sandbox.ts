@@ -24,8 +24,8 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerCommand("quickstart", {
-    description: "Build and start sandbox: /quickstart [name]",
+  pi.registerCommand("sandbox", {
+    description: "Build and start sandbox: /sandbox [name]",
     async handler(args, ctx) {
       const params: Record<string, string> = {};
       for (const arg of args) {
@@ -34,8 +34,8 @@ export default function (pi: ExtensionAPI) {
           break;
         }
       }
-      const { quickstartTool } = await import("../src/tools/quickstart.js");
-      const result = await quickstartTool.execute("cmd", params, undefined, undefined, ctx);
+      const { sandboxTool } = await import("../src/tools/sandbox.js");
+      const result = await sandboxTool.execute("cmd", params, undefined, undefined, ctx);
       ctx.ui.notify(result.content[0].type === "text" ? result.content[0].text : "", "info");
     },
   });
