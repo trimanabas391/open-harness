@@ -49,8 +49,7 @@ describe("roadmap page", () => {
     render(<RoadmapPage />);
     const links = screen.getAllByRole("link");
     const githubIssuesLink = links.find(
-      (link) =>
-        link.getAttribute("href") === "https://github.com/ryaneggz/next-postgres-shadcn/issues"
+      (link) => link.getAttribute("href") === "https://github.com/ryaneggz/open-harness/issues"
     );
     expect(githubIssuesLink).toBeDefined();
   });
