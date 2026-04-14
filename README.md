@@ -28,15 +28,9 @@ openharness sandbox
 
 **Option C — Manual:**
 ```bash
-# Configure (compose reads these from the shell environment)
-export SANDBOX_NAME=my-sandbox
-export SANDBOX_PASSWORD=my-secret
-
-# Build and start
-docker compose -f .devcontainer/docker-compose.yml up -d --build
-
-# Enter the sandbox
-docker exec -it -u sandbox $SANDBOX_NAME bash
+SANDBOX_NAME=my-sandbox SANDBOX_PASSWORD=changeme \
+  docker compose -f .devcontainer/docker-compose.yml up -d --build
+docker exec -it -u sandbox my-sandbox bash
 ```
 
 ### 3. Onboard (one-time)
