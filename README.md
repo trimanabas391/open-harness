@@ -8,7 +8,7 @@ Isolated, pre-configured sandbox containers for AI coding agents — [Claude Cod
 
 ## ⚡ Quickstart
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Node.js](https://nodejs.org/) (v20+).
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [git](https://git-scm.com/). Node.js only needed with `--with-cli` flag.
 
 ### 1. Install the CLI
 
@@ -28,7 +28,9 @@ openharness sandbox
 
 **Option C — Manual:**
 ```bash
-docker compose -f .devcontainer/docker-compose.yml up -d --build
+SANDBOX_NAME=my-sandbox SANDBOX_PASSWORD=changeme \
+  docker compose -f .devcontainer/docker-compose.yml up -d --build
+docker exec -it -u sandbox my-sandbox bash
 ```
 
 ### 3. Onboard (one-time)
