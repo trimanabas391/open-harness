@@ -33,17 +33,13 @@ docker compose -f .devcontainer/docker-compose.yml up -d --build
 docker exec -it -u sandbox sandbox bash   # use your SANDBOX_NAME
 ```
 
-### 3. Onboard (one-time)
+### 3. Onboard (one-time, inside the sandbox)
 
 ```bash
-openharness onboard
+gh auth login                    # authenticate GitHub CLI
+gh auth setup-git                # configure git auth (no SSH keys needed)
+claude                           # authenticate Claude Code (OAuth)
 ```
-
-Walks through 4 steps:
-1. **SSH key** — generate or verify, add to GitHub
-2. **GitHub CLI** — `gh auth login`
-3. **Cloudflare tunnel** — optional, for public URLs
-4. **Claude Code** — OAuth credential setup
 
 ### 4. Start working
 
@@ -57,7 +53,7 @@ claude                           # start an agent
 | User | `sandbox` |
 | Shell | `openharness shell <name>` or `docker exec -it -u sandbox <name> bash` |
 
-### 🧹 Cleanup
+### Cleanup
 
 ```bash
 openharness clean                # containers + volumes
@@ -65,7 +61,33 @@ openharness clean                # containers + volumes
 
 ---
 
-## 🧩 Compose Overlays
+## Configuration
+
+Copy the example env file and edit to taste:
+
+```bash
+cp .devcontainer/.example.env .env
+```
+
+Docker Compose reads `.env` automatically from the project root.
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SANDBOX_NAME` | `sandbox` | Container and project name |
+| `SANDBOX_PASSWORD` | `changeme` | Sandbox user password (only used with sshd overlay) |
+| `TZ` | `America/Denver` | Container timezone |
+| `HEARTBEAT_AGENT` | `claude` | Agent CLI for heartbeat tasks (`claude`, `codex`, `pi`) |
+| `HEARTBEAT_ACTIVE_START` | _(empty)_ | Heartbeat active window start (e.g. `08:00`) |
+| `HEARTBEAT_ACTIVE_END` | _(empty)_ | Heartbeat active window end (e.g. `18:00`) |
+| `HOST_SSH_DIR` | `~/.ssh` | Host SSH directory to mount (only with `ssh.yml` overlay) |
+| `SLACK_APP_TOKEN` | _(empty)_ | Slack app token (only with `slack.yml` overlay) |
+| `SLACK_BOT_TOKEN` | _(empty)_ | Slack bot token (only with `slack.yml` overlay) |
+| `OPENAI_API_KEY` | _(empty)_ | OpenAI key for Slack bot (only with `slack.yml` overlay) |
+| `PORT` | `3000` | Host port for dev server (only with port-forward overlay) |
+
+---
+
+## Compose Overlays
 
 Toggle optional services in `.openharness/config.json`:
 
@@ -74,8 +96,7 @@ Toggle optional services in `.openharness/config.json`:
   "composeOverrides": [
     ".devcontainer/docker-compose.cloudflared.yml",
     ".devcontainer/docker-compose.docker.yml",
-    ".devcontainer/docker-compose.slack.yml",
-    ".devcontainer/docker-compose.ssh-generate.yml"
+    ".devcontainer/docker-compose.slack.yml"
   ]
 }
 ```
