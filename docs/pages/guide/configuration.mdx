@@ -10,52 +10,49 @@ Copy the example env file and edit to taste:
 cp .devcontainer/.example.env .env
 ```
 
+The `.example.env` file contains all available variables with comments explaining each one.
+
 ## Environment Variables
 
 ### Sandbox
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SANDBOX_NAME` | `sandbox` | Container and project name |
-| `SANDBOX_PASSWORD` | `changeme` | Sandbox user password (only used with [sshd overlay](/open-harness/guide/overlays#ssh-server-access)) |
+| `SANDBOX_NAME` | `sandbox` | Name used for the Docker container, compose project, and CLI commands (e.g. `openharness shell $SANDBOX_NAME`) |
+| `SANDBOX_PASSWORD` | `changeme` | Password for the `sandbox` Linux user. Only takes effect when the [sshd overlay](/open-harness/guide/overlays#ssh-server-access) is active — used for SSH login. Without the overlay, no password is set. |
 
 ### Timezone
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `TZ` | `America/Denver` | Container timezone |
+| `TZ` | `America/Denver` | Container timezone. Affects cron schedules, log timestamps, and time-aware tools inside the sandbox. |
 
 ### Heartbeats
 
+Heartbeats are cron-scheduled tasks that run an AI agent CLI inside the sandbox on a recurring schedule (e.g., hourly issue triage). Task definitions live in `workspace/heartbeats.conf`. See the [heartbeats guide](/open-harness/guide/heartbeats) for details.
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `HEARTBEAT_AGENT` | `claude` | Agent CLI for heartbeat tasks (`claude`, `codex`, `pi`) |
-| `HEARTBEAT_ACTIVE_START` | _(empty)_ | Active window start (e.g. `08:00`) |
-| `HEARTBEAT_ACTIVE_END` | _(empty)_ | Active window end (e.g. `18:00`) |
+| `HEARTBEAT_AGENT` | `claude` | Which agent CLI to invoke for heartbeat tasks. Options: `claude`, `codex`, `pi`. |
+| `HEARTBEAT_ACTIVE_START` | _(empty)_ | Hour (24h integer) when the active window opens. When both START and END are set, heartbeats only fire during this window. When empty, heartbeats run at any hour. Example: `8` for 8 AM. |
+| `HEARTBEAT_ACTIVE_END` | _(empty)_ | Hour (24h integer) when the active window closes. Example: `18` for 6 PM. With `START=8` and `END=18`, heartbeats only run between 8 AM–6 PM in the container timezone. |
 
 ### SSH (overlay)
 
-These only apply when the corresponding SSH overlay is enabled.
+Only applies when an SSH overlay is enabled. See [overlays](/open-harness/guide/overlays#ssh-key-strategy).
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `HOST_SSH_DIR` | `~/.ssh` | Host SSH directory to mount read-only (with `ssh.yml` overlay) |
+| `HOST_SSH_DIR` | `~/.ssh` | Path to your host SSH directory, mounted read-only into the container (with `ssh.yml` overlay). Lets git inside the sandbox authenticate using your existing SSH keys. |
 
 ### Slack bot (overlay)
 
-These only apply when the `slack.yml` overlay is enabled.
+Only applies when the `slack.yml` overlay is enabled. The Slack bot (Mom) connects to a Slack workspace via Socket Mode and responds to messages using an AI agent. See [Slack setup](/open-harness/slack/setup).
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SLACK_APP_TOKEN` | _(empty)_ | Slack app-level token (`xapp-...`) |
-| `SLACK_BOT_TOKEN` | _(empty)_ | Slack bot token (`xoxb-...`) |
-| `OPENAI_API_KEY` | _(empty)_ | OpenAI API key for LLM provider |
-
-### Port forwarding
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | `3000` | Host port for dev server (only relevant if you add a port mapping overlay) |
+| `SLACK_APP_TOKEN` | _(empty)_ | Slack app-level token for Socket Mode connection (starts with `xapp-`). Required to connect to Slack. |
+| `SLACK_BOT_TOKEN` | _(empty)_ | Slack bot OAuth token for posting messages (starts with `xoxb-`). Required to send replies. |
 
 ## Precedence
 
@@ -65,4 +62,4 @@ Docker Compose resolves variables in this order:
 2. `.env` file in the project root
 3. Default values in `docker-compose.yml` (the `:-` fallbacks)
 
-Shell environment always wins, so you can override `.env` values on the command line.
+Shell environment always wins, so you can override `.env` values inline on the command line.
