@@ -30,7 +30,7 @@ openharness sandbox
 ```bash
 cp .devcontainer/.example.env .env        # configure name, password, etc.
 docker compose -f .devcontainer/docker-compose.yml up -d --build
-docker exec -it -u sandbox sandbox bash   # use your SANDBOX_NAME
+docker exec -it -u sandbox openharness bash   # use your SANDBOX_NAME
 ```
 
 ### 3. Onboard (one-time, inside the sandbox)
