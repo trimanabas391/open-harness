@@ -43,7 +43,7 @@ Only applies when an SSH overlay is enabled. See [overlays](/open-harness/guide/
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `HOST_SSH_DIR` | `~/.ssh` | Path to your host SSH directory, mounted read-only into the container (with `ssh.yml` overlay). Lets git inside the sandbox authenticate using your existing SSH keys. |
+| `HOST_SSH_DIR` | _(empty)_ | Path to your host SSH directory, mounted read-only into the container. Lets git inside the sandbox use your existing SSH keys. **Setting this automatically enables the `ssh.yml` overlay** — no need to add it to `config.json` manually. |
 
 ### Slack bot (overlay)
 

@@ -79,7 +79,7 @@ Docker Compose reads `.env` automatically from the project root.
 | `HEARTBEAT_AGENT` | `claude` | Which agent CLI runs heartbeat tasks (`claude`, `codex`, `pi`) |
 | `HEARTBEAT_ACTIVE_START` | _(empty)_ | Hour (24h integer) when heartbeats start firing (e.g. `8` for 8 AM) |
 | `HEARTBEAT_ACTIVE_END` | _(empty)_ | Hour (24h integer) when heartbeats stop firing (e.g. `18` for 6 PM) |
-| `HOST_SSH_DIR` | `~/.ssh` | Host SSH dir mounted read-only for git auth (only with `ssh.yml` overlay) |
+| `HOST_SSH_DIR` | _(empty)_ | Host SSH dir mounted read-only for git auth. **Setting this auto-enables the `ssh.yml` overlay.** |
 | `SLACK_APP_TOKEN` | _(empty)_ | Slack Socket Mode token `xapp-...` (only with `slack.yml` overlay) |
 | `SLACK_BOT_TOKEN` | _(empty)_ | Slack bot OAuth token `xoxb-...` (only with `slack.yml` overlay) |
 
