@@ -1,5 +1,0 @@
-services:
-  sandbox:
-    environment:
-      - INSTALL_CLOUDFLARED=true
-      - INSTALL_BROWSER=true

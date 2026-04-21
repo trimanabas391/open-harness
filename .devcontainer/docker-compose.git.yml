@@ -1,4 +1,0 @@
-services:
-  sandbox:
-    volumes:
-      - ${GIT_COMMON_DIR}:${GIT_COMMON_DIR}

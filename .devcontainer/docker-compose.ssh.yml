@@ -1,4 +1,0 @@
-services:
-  sandbox:
-    volumes:
-      - ${HOST_SSH_DIR:-~/.ssh}:/home/sandbox/.ssh:ro
